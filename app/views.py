@@ -8,7 +8,14 @@ from mtgsdk import Card
 from mtgsdk import Set
 
 
-def get_card_symbols():
+SCRYFALL_URI = 'https://svgs.scryfall.io/card-symbols/'
+
+
+def get_symbol_uri(symbol: str) -> str:
+    return f'{SCRYFALL_URI}{symbol}.svg'
+
+
+def get_card_symbols() -> dict:
     data = {}
     response = requests.get('https://api.scryfall.com/symbology')
     if response.status_code == 200:
@@ -17,13 +24,8 @@ def get_card_symbols():
     return data
 
 
-def get_mana_color(color_sym: str) -> str:
-    data = get_card_symbols()
-    color_img = ''
-    for d in data['data']:
-        if d['symbol'] == color_sym:
-            color_img = d['svg_uri']
-    return color_img
+def process_symbol_str(symbols: str) -> tuple:
+    return tuple(str(symbols).replace('{', '').replace('}', ''))
 
 
 # @cache_page
@@ -40,7 +42,7 @@ def card_list(request, set_id: str):
     rs = Card.where(set=set_id).all()
     cards = []
     for r in rs:
-        new_mana_cost = tuple(str(r.mana_cost).replace('{', '').replace('}', ''))
+        new_mana_cost = process_symbol_str(r.mana_cost)
         cards.append(
             {
                 'name': r.name,
@@ -49,7 +51,12 @@ def card_list(request, set_id: str):
                 'color_identity': r.color_identity,
                 'colors': r.colors,
                 'id': r.id,
-                'image_url': r.image_url
+                'type': r.type,
+                'subtypes': r.subtypes,
+                'text': r.text,
+                'image_url': r.image_url,
+                'power': r.power,
+                'toughness': r.toughness
             }
         )
         print(new_mana_cost)

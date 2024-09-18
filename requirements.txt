@@ -1,5 +1,6 @@
 Django
 django-bootstrap-breadcrumbs2
+django-bootstrap5
 django-redis
 requests
 mtgsdk

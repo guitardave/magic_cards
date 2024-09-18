@@ -4,7 +4,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb card_set.name 'app:card_list' card_set.code %}
-    {% breadcrumb obj.name '' %}
+    {% breadcrumb obj.name 'app:card_image' obj.id %}
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -24,11 +24,31 @@
             <div class="col-sm-8">
                 <div class="card">
                     <div class="card-header">
-                        {{ obj.type }} ({{ obj.mana_cost }})
+                        <div class="row">
+                            <div class="col-sm-8">
+                                {{ obj.type }}
+                            </div>
+                            <div class="col-sm-4 me-auto text-end">
+                                {{ obj.mana_cost }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                {% if obj.power %}
+                                    {{ obj.power }}/{{ obj.toughness }}
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-4">&nbsp;</div>
+                        </div>
                     </div>
                     <div class="card-body">
                         {{ obj.text }}
                     </div>
+                    {% if obj.flavor %}
+                        <div class="card-body">
+                            <i>{{ obj.flavor }}</i>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
