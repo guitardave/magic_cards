@@ -1,0 +1,6 @@
+Django
+django-bootstrap-breadcrumbs2
+django-redis
+requests
+mtgsdk
+gunicorn

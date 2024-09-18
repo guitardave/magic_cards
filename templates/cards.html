@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb card_set.name 'app:card_list' card_set.code %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div id="breadcrumbs">{% render_breadcrumbs %}</div>
+        <h1></h1>
+        <div class="card">
+            <div class="card-header">
+                {{ card_set.name }}
+            </div>
+            <div class="card-body scroll">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Card Name</th>
+                            <th>Image</th>
+                            <th>Colors</th>
+                            <th>Mana cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in cards %}
+                            {% if c.image_url %}
+                            <tr>
+                                <td><a href="{% url 'app:card_image' c.id %}">{{ c.name }}</a></td>
+                                <td>
+                                    <img class="img-fluid card-image" src="{{ c.image_url }}" alt="{{ c.name }}">
+                                </td>
+                                <td>
+                                    {% for color in c.colors %}
+                                        <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{color}}.svg" alt="">
+                                    {% endfor %}
+                                </td>
+                                <td>{{ c.mana_cost }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

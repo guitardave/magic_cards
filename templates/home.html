@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap_breadcrumbs %}
+{% block content %}
+    <div class="container">
+        <div id="breadcrumbs">{% render_breadcrumbs %}</div>
+        <h1></h1>
+        <div class="card">
+            <div class="card-header">
+                MtG Sets
+            </div>
+            <div class="card-body scroll">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Card Set</th>
+                            <th>Released</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in sets %}
+                            <tr>
+                                <td>{{ s.code }}</td>
+                                <td><a href="{% url 'app:card_list' s.code %}">{{ s.name }}</a></td>
+                                <td>{{ s.release_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

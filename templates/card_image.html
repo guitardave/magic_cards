@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb card_set.name 'app:card_list' card_set.code %}
+    {% breadcrumb obj.name '' %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div id="breadcrumbs">{% render_breadcrumbs %}</div>
+        <h1></h1>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-header"><div class="card-title">{{ obj.name }}</div></div>
+                    <div class="card-body">
+                        <img class="card-img" src="{{ obj.image_url }}" alt="{{ obj.name }}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="card">
+                    <div class="card-header">
+                        {{ obj.type }} ({{ obj.mana_cost }})
+                    </div>
+                    <div class="card-body">
+                        {{ obj.text }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+{% endblock %}
