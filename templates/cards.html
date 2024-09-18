@@ -11,7 +11,14 @@
         <h1></h1>
         <div class="card">
             <div class="card-header">
-                {{ card_set.name }}
+                <div class="row">
+                    <div class="col-sm-6 align-middle">
+                        <h1>{{ card_set.name }}</h1>
+                    </div>
+                    <div class="col-sm-6 me-auto text-end">
+                        {% include '_search_filter.html' %}
+                    </div>
+                </div>
             </div>
             <div class="card-body scroll">
                 <table class="table table-sm table-striped">
@@ -23,27 +30,37 @@
                             <th>Mana cost</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="myTable">
                         {% for c in cards %}
                             {% if c.image_url %}
                             <tr>
                                 <td><a href="{% url 'app:card_image' c.id %}">{{ c.name }}</a></td>
                                 <td>
-                                    <img class="img-fluid card-image" src="{{ c.image_url }}" alt="{{ c.name }}">
+                                    <a href="{% url 'app:card_image' c.id %}">
+                                        <img class="img-thumbnail" src="{{ c.image_url }}" alt="{{ c.name }}">
+                                    </a>
                                 </td>
                                 <td>
                                     {% for color in c.colors %}
                                         <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{color}}.svg" alt="">
                                     {% endfor %}
                                 </td>
-                                <td>{{ c.mana_cost }}</td>
+                                <td>
+                                    {% for m in c.mana_cost %}
+                                        <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{m}}.svg" alt="">
+                                        
+                                    {% endfor %}
+                                </td>
                             </tr>
                             {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            <div class="card-footer">
+                <small class="text-muted">{{ cards|length }}</small>
+            </div>
         </div>
     </div>
-    
+
 {% endblock %}

@@ -26,6 +26,10 @@
 	{% endif %}
 
     <style>
+        h1 {
+            font-size: 20px;
+            font-weight: normal;
+        }
         .scroll {
             max-height: 640px;
             overflow-y: scroll;
@@ -71,6 +75,16 @@
             </p>
         </footer>
     </div>
-    
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                let value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    $("#searchCount").html()
+                });
+            });
+        });
+    </script>
 </body>
 </html>

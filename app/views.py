@@ -26,7 +26,7 @@ def get_mana_color(color_sym: str) -> str:
     return color_img
 
 
-@cache_page
+# @cache_page
 def home(request):
     try:
         card_sets = Set.all()
@@ -38,20 +38,19 @@ def home(request):
 def card_list(request, set_id: str):
     card_set = Set.find(set_id)
     rs = Card.where(set=set_id).all()
-    # cards = []
-    # for r in rs:
-    #     # mana_colors = [{'color': get_mana_color(c)} for c in r.colors]
-    #     cards.append(
-    #         {
-    #             'name': r.name,
-    #             'mana_cost': r.mana_cost,
-    #             'color_identity': r.color_identity,
-    #             'colors': r.colors,
-    #             'id': r.id,
-    #             'image_url': r.image_url
-    #         }
-    #     )
-    context = {'cards': rs, 'title': 'Card List', 'card_set': card_set}
+    cards = []
+    for r in rs:
+        cards.append(
+            {
+                'name': r.name,
+                'mana_cost': list(str(r.mana_cost).replace('{', '').replace('}', '')),
+                'color_identity': r.color_identity,
+                'colors': r.colors,
+                'id': r.id,
+                'image_url': r.image_url
+            }
+        )
+    context = {'cards': cards, 'title': 'Card List', 'card_set': card_set}
     return render(request, 'cards.html', context)
 
 
