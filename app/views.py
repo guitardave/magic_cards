@@ -40,16 +40,19 @@ def card_list(request, set_id: str):
     rs = Card.where(set=set_id).all()
     cards = []
     for r in rs:
+        new_mana_cost = tuple(str(r.mana_cost).replace('{', '').replace('}', ''))
         cards.append(
             {
                 'name': r.name,
-                'mana_cost': list(str(r.mana_cost).replace('{', '').replace('}', '')),
+                'og_mana_cost': r.mana_cost,
+                'mana_cost': new_mana_cost,
                 'color_identity': r.color_identity,
                 'colors': r.colors,
                 'id': r.id,
                 'image_url': r.image_url
             }
         )
+        print(new_mana_cost)
     context = {'cards': cards, 'title': 'Card List', 'card_set': card_set}
     return render(request, 'cards.html', context)
 
