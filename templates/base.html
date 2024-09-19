@@ -1,8 +1,8 @@
-{% load static %}
 {% load django_bootstrap5 %}
 {% load django_bootstrap_breadcrumbs %}
+{% load static %}
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="">
 
 <head>
 	<!-- Required meta tags -->
@@ -44,13 +44,38 @@
         .card-image {
             max-height: 64px;
         }
+        .navHeader {
+            font-size:24px;
+            font-family: "High Tower Text", serif;
+        }
     </style>
 </head>
 
 <body>
-	
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md bg-gradient">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="{% url 'app:home' %}">
+                    <img class="img-fluid" src="{% static 'images/mtg-logo-2017.png' %}" alt="logo">
+{#                    <span class="navHeader">Planet 8 Design</span>#}
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            &nbsp;
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>	
 	<main role="main" class="container">
-        <p>&nbsp;</p>
+{#        <p>&nbsp;</p>#}
+{#        <p>&nbsp;</p>#}
+{#        <p>&nbsp;</p>#}
         {% block breadcrumbs %}
             {% clear_breadcrumbs %}
             {% breadcrumb "Sets List" "/" %}

@@ -1,4 +1,5 @@
 import json
+import re
 
 import requests
 from django.http import JsonResponse
@@ -64,5 +65,11 @@ def card_list(request, set_id: str):
 def card_image(request, card_id: str):
     obj = Card.find(card_id)
     card_set = Set.find(obj.set)
+    o_text = obj.text
+    symbols = re.findall(r'\{.*?}', o_text)
+    for symbol in symbols:
+        img_url = f'https://svgs.scryfall.io/card-symbols/{str(symbol).strip("{}")}.svg'
+        print(img_url)
+    print(o_text)
     context = {'title': 'Card Image', 'obj': obj, 'card_set': card_set}
     return render(request, 'card_image.html', context)
