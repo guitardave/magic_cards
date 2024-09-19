@@ -10,6 +10,14 @@ from mtgsdk import Set
 
 
 SCRYFALL_URI = 'https://svgs.scryfall.io/card-symbols/'
+SCRYFALL_SETS = 'https://api.scryfall.com/sets/'
+
+
+def get_sets() -> list[dict]:
+    res = requests.get(SCRYFALL_SETS)
+    data = res.json()
+    # print(data)
+    return data['data']
 
 
 def get_symbol_uri(symbol: str) -> str:
@@ -26,18 +34,31 @@ def get_card_symbols() -> dict:
 
 
 def process_symbol_str(symbols: str) -> tuple:
-    return tuple(str(symbols).replace('{', '').replace('}', ''))
+    symb_list = tuple(str(symbols).replace('{', '').replace('}', ''))
+    # for symb in symb_list:
+    #     image_url =
+    return symb_list
 
 
-# @cache_page
+# @cache_page(60 * 15)
 def home(request):
     try:
-        card_sets = Set.all()
-        return render(request, 'home.html', {'sets': card_sets})
+        card_sets = get_sets()
+        cards = [
+            dict(
+                code=data['code'],
+                symbol_url=data['icon_svg_uri'],
+                name=data['name'],
+                release_date=data['released_at']
+            ) for data in card_sets
+        ]
+        print(cards)
+        return render(request, 'card_sets.html', {'sets': cards})
     except Exception as e:
-        return JsonResponse({'Error': e})
+        return JsonResponse({'Error': str(e)})
 
 
+@cache_page(60 * 15)
 def card_list(request, set_id: str):
     card_set = Set.find(set_id)
     rs = Card.where(set=set_id).all()

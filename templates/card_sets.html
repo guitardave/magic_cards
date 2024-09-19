@@ -14,6 +14,7 @@
                         <tr>
                             <th>Code</th>
                             <th>Card Set</th>
+                            <th>Icon</th>
                             <th>Released</th>
                         </tr>
                     </thead>
@@ -22,6 +23,7 @@
                             <tr>
                                 <td>{{ s.code }}</td>
                                 <td><a href="{% url 'app:card_list' s.code %}">{{ s.name }}</a></td>
+                                <td><img class="img-fluid mana-image" src="{{ s.symbol_url }}" alt="{{ s.code }}"></td>
                                 <td>{{ s.release_date }}</td>
                             </tr>
                         {% endfor %}
@@ -34,6 +36,12 @@
         </div>
     </div>
     <script>
-        let table = new DataTable('#myTable')
+        let table = new DataTable(
+            '#myTable', 
+            {
+                order: [[3, 'asc']], 
+                lengthMenu: [[25, 50, 100, -1], [25, 50, 100, 'All']]
+            }
+        )
     </script>
 {% endblock %}
