@@ -1,4 +1,4 @@
-Django
+Django==4.2.16
 django-bootstrap-breadcrumbs2
 django-bootstrap5
 django-redis
