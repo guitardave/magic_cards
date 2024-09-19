@@ -4,12 +4,11 @@
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb card_set.name 'app:card_list' card_set.code %}
+    {% breadcrumb card_set.code 'app:card_list' card_set.code %}
 {% endblock %}
 {% block content %}
     <div class="container">
         <div id="breadcrumbs">{% render_breadcrumbs %}</div>
-        <h1></h1>
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -27,7 +26,6 @@
                         <tr>
                             <th>Image</th>
                             <th>Card Info</th>
-{#                            <th>Colors</th>#}
                             <th>Mana cost</th>
                         </tr>
                     </thead>
@@ -40,29 +38,19 @@
                                         <img class="img-thumbnail" src="{{ c.image_url }}" alt="{{ c.name }}">
                                     </a>
                                 </td>
-                                <td class="col-sm-8">
-                                    <a href="{% url 'app:card_image' c.id %}">{{ c.name }}</a>
-                                    <br>
-                                    {{ c.type }}
-                                    <br>
-                                    {{ c.text }}
+                                <td class="col-sm-8 align-text-top">
+                                    <p><a href="{% url 'app:card_image' c.id %}">{{ c.name }}</a></p>
+                                    <p>{{ c.type }}</p>
+                                    <p class="small text-muted">{{ c.text }}</p>
                                     {% if c.power %}
-                                        <br>
-                                        {{ c.power }}/{{ c.toughness }}
+                                        <p>{{ c.power }}/{{ c.toughness }}</p>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="align-text-top">
                                     {% for m in c.mana_cost %}
                                         <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{m}}.svg" alt="{{ m }}">
                                     {% endfor %}
                                 </td>
-                                
-{#                                <td>#}
-{#                                    {% for color in c.colors %}#}
-{#                                        <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{color}}.svg" alt="{{ color }}">#}
-{#                                    {% endfor %}#}
-{#                                </td>#}
-                                
                             </tr>
                             {% endif %}
                         {% endfor %}

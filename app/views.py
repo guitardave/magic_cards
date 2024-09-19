@@ -40,26 +40,23 @@ def home(request):
 def card_list(request, set_id: str):
     card_set = Set.find(set_id)
     rs = Card.where(set=set_id).all()
-    cards = []
-    for r in rs:
-        new_mana_cost = process_symbol_str(r.mana_cost)
-        cards.append(
-            {
-                'name': r.name,
-                'og_mana_cost': r.mana_cost,
-                'mana_cost': new_mana_cost,
-                'color_identity': r.color_identity,
-                'colors': r.colors,
-                'id': r.id,
-                'type': r.type,
-                'subtypes': r.subtypes,
-                'text': r.text,
-                'image_url': r.image_url,
-                'power': r.power,
-                'toughness': r.toughness
-            }
-        )
-        print(new_mana_cost)
+    cards = [
+        {
+            'name': r.name,
+            'og_mana_cost': r.mana_cost,
+            'mana_cost': process_symbol_str(r.mana_cost),
+            'color_identity': r.color_identity,
+            'colors': r.colors,
+            'id': r.id,
+            'type': r.type,
+            'subtypes': r.subtypes,
+            'text': r.text,
+            'image_url': r.image_url,
+            'power': r.power,
+            'toughness': r.toughness
+        }
+        for r in rs
+    ]
     context = {'cards': cards, 'title': 'Card List', 'card_set': card_set}
     return render(request, 'cards.html', context)
 
