@@ -3,7 +3,7 @@
 {% load django_bootstrap_breadcrumbs %}
 {% block content %}
     <div class="container">
-        <div id="breadcrumbs">{% render_breadcrumbs %}</div>
+        <div class="small" id="breadcrumbs">{% render_breadcrumbs %}</div>
         <div class="card">
             <div class="card-header">
                 <h1>MtG Sets</h1>
@@ -20,12 +20,14 @@
                     </thead>
                     <tbody>
                         {% for s in sets %}
-                            <tr>
-                                <td>{{ s.code }}</td>
-                                <td><a href="{% url 'app:card_list' s.code %}">{{ s.name }}</a></td>
-                                <td><img class="img-fluid mana-image" src="{{ s.symbol_url }}" alt="{{ s.code }}"></td>
-                                <td>{{ s.release_date }}</td>
-                            </tr>
+                            {% if s.code|length == 3 %}
+                                <tr>
+                                    <td>{{ s.code }}</td>
+                                    <td><a href="{% url 'app:card_list' s.code %}">{{ s.name }}</a></td>
+                                    <td><img class="img-fluid mana-image" src="{{ s.symbol_url }}" alt="{{ s.code }}"></td>
+                                    <td>{{ s.release_date }}</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -37,9 +39,9 @@
     </div>
     <script>
         let table = new DataTable(
-            '#myTable', 
+            '#myTable',
             {
-                order: [[3, 'asc']], 
+                order: [[3, 'asc']],
                 lengthMenu: [[25, 50, 100, -1], [25, 50, 100, 'All']]
             }
         )

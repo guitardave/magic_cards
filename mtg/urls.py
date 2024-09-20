@@ -17,8 +17,11 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path, include
 
+from app.views import customhandler404
+
 app_name = 'mtg'
 
 urlpatterns = [
     path('', include('app.urls')),
 ]
+handler404 = customhandler404

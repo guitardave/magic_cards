@@ -14,6 +14,9 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
 
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="{% static 'fontawesome/font-awesome.min.css' %}">
+
     <!-- JQUERY -->
     <script src="{% static 'jquery/jquery.min.js' %}"></script>
     <script src="{% static 'jquery-ui/jquery-ui.js' %}"></script>
@@ -23,37 +26,19 @@
     <script src="{% static 'datatables/dataTables.js' %}"></script>
     <link href="{% static 'datatables/dataTables.css' %}" rel="stylesheet">
 
+    <link href="{% static 'css/custom.css'  %}" rel="stylesheet">
+
     {% if title %}
 		<title>Planet 8 Design - MTG: {{ title }}</title>
 	{% else %}
 		<title>Planet 8 Design - MTG</title>
 	{% endif %}
 
-    <style>
-        h1 {
-            font-size: 20px;
-            font-weight: normal;
-        }
-        .scroll {
-            max-height: 640px;
-            overflow-y: scroll;
-        }
-        .mana-image {
-            max-height: 24px;
-        }
-        .card-image {
-            max-height: 64px;
-        }
-        .navHeader {
-            font-size:24px;
-            font-family: "High Tower Text", serif;
-        }
-    </style>
 </head>
 
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-md bg-gradient">
+        <nav class="navbar navbar-expand-md navbar-dark bg-light fixed-top">
             <div class="container">
                 <a class="navbar-brand mr-4" href="{% url 'app:home' %}">
                     <img class="img-fluid" src="{% static 'images/mtg-logo-2017.png' %}" alt="logo">
@@ -65,7 +50,14 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            &nbsp;
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <label for="search"></label>
+                                    <input type="text" name="search" id="search" class="form-control form-control-lg rounded-start" placeholder="Search...">
+                                    <button class="btn btn-lg btn-outline-secondary"><i class="fa fa-search"></i></button>
+                                </div>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -73,9 +65,9 @@
         </nav>
     </header>	
 	<main role="main" class="container">
-{#        <p>&nbsp;</p>#}
-{#        <p>&nbsp;</p>#}
-{#        <p>&nbsp;</p>#}
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
         {% block breadcrumbs %}
             {% clear_breadcrumbs %}
             {% breadcrumb "Sets List" "/" %}

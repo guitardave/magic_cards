@@ -10796,7 +10796,7 @@
 			 * control over where it appears in the string. If "_INPUT_" is not given
 			 * then the input box is appended to the string automatically.
 			 */
-			"sSearch": "Search:",
+			"sSearch": "Filter:",
 	
 	
 			/**

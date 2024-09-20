@@ -8,15 +8,12 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-        <div id="breadcrumbs">{% render_breadcrumbs %}</div>
+        <div class="small" id="breadcrumbs">{% render_breadcrumbs %}</div>
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-sm-8 align-middle">
-                        <h1>{{ card_set.name }}</h1>
-                    </div>
-                    <div class="col-sm-4 me-auto text-end">
-{#                        {% include '_search_filter.html' %}#}
+                    <div class="col-sm-12 align-middle">
+                        <h1>{% if srch_term %}{{ srch_term }}{% else %}{{ card_set.name }}{% endif %}</h1>
                     </div>
                 </div>
             </div>
@@ -41,14 +38,14 @@
                                 <td class="col-sm-8 align-text-top">
                                     <p><a href="{% url 'app:card_image' c.id %}">{{ c.name }}</a></p>
                                     <p>{{ c.type }}</p>
-                                    <p class="small text-muted">{{ c.text }}</p>
+                                    <p class="small text-muted">{{ c.text|safe }}</p>
                                     {% if c.power %}
                                         <p>{{ c.power }}/{{ c.toughness }}</p>
                                     {% endif %}
                                 </td>
                                 <td class="align-text-top">
                                     {% for m in c.mana_cost %}
-                                        <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{m}}.svg" alt="{{ m }}">
+                                        <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{m|get_symbol}}.svg" alt="{{ m|get_symbol }}">
                                     {% endfor %}
                                 </td>
                             </tr>
@@ -64,9 +61,9 @@
     </div>
     <script>
         let table = new DataTable(
-            '#myTable', 
+            '#myTable',
             {
-                order: [[2, 'asc']], 
+                order: [[2, 'asc']],
                 lengthMenu: [[25, 50, 100, -1], [25, 50, 100, 'All']]
             }
         )

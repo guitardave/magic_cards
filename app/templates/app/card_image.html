@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_tags %}
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
     {{ block.super }}
@@ -8,7 +9,7 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-        <div id="breadcrumbs">{% render_breadcrumbs %}</div>
+        <div class="small" id="breadcrumbs">{% render_breadcrumbs %}</div>
         <div class="row">
             <div class="col-sm-4">
                 <div class="card">
@@ -28,7 +29,9 @@
                                 {{ obj.type }}
                             </div>
                             <div class="col-sm-4 me-auto text-end">
-                                {{ obj.mana_cost }}
+                                {% for m in obj.mana_cost %}
+                                    <img class="img-fluid mana-image" src="https://svgs.scryfall.io/card-symbols/{{m|get_symbol}}.svg" alt="{{ m|get_symbol }}">
+                                {% endfor %}
                             </div>
                         </div>
                         <div class="row">
@@ -41,7 +44,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        {{ obj.text }}
+                        {{ obj.text| safe }}
                     </div>
                     {% if obj.flavor %}
                         <div class="card-body">
