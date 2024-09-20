@@ -50,7 +50,7 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <form method="post">
+                            <form method="post" action="{% url 'app:card_search' %}">
                                 {% csrf_token %}
                                 <div class="input-group">
                                     <label for="search"></label>

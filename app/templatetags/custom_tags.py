@@ -22,10 +22,9 @@ def concat_int(arg1, arg2):
 
 @register.filter
 def get_symbol(value):
-    return str(value).strip('{}').strip(' ')
+    return str(value).strip('{} ')
 
 
 @register.filter
-def replace_bad_html(value):
-    matches = re.findall(r'<[^>]+>', value)
-    return value.replace(matches[1], '')
+def get_symbol_uri(symbol: str) -> str:
+    return f'https://svgs.scryfall.io/card-symbols/{str(symbol).strip("{} ")}.svg'

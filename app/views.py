@@ -3,7 +3,7 @@ import re
 
 import requests
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 from mtgsdk import Card
@@ -61,7 +61,7 @@ def home(request):
         return JsonResponse({'Error': str(e)})
 
 
-@cache_page(60 * 15)
+# @cache_page(60 * 15)
 def card_list(request, set_id: str):
     try:
         card_set = Set.find(set_id)
@@ -97,7 +97,7 @@ def card_list(request, set_id: str):
         return JsonResponse({'Error': str(e)})
 
 
-@cache_page(60 * 15)
+# @cache_page(60 * 15)
 def card_image(request, card_id: str):
     try:
         obj = Card.find(card_id)
@@ -121,25 +121,34 @@ def card_image(request, card_id: str):
 
 def card_search(request):
     try:
-        context = {'title': 'Card Search'}
+        context = {'title': 'Card Search', 'srch_term': ''}
         if request.method == 'POST':
             form = SearchForm(request.POST or None)
             if form.is_valid():
                 search = form.cleaned_data['search']
-                response = requests.get(SCRYFALL_API + 'cards/search?q=' + search)
+                context['srch_term'] = search
+                print(search)
+                response = requests.get('https://api.scryfall.com/cards/search?q=%s' % search)
                 if response.status_code == 200:
-                    srch_results = response.json()
-                    cards = [
-                        dict(
-                            code=data['code'],
-                            symbol_url=data['icon_svg_uri'],
-                            name=data['name'],
-                            release_date=data['released_at']
-                        ) for data in srch_results['data']
-                    ]
-                    context['cards'] = cards
-            else:
-                messages.warning(request, 'Please enter a search term')
+                    srch_results = response.json()['data']
+                    if len(srch_results) > 0:
+                        cards = [
+                            {
+                                'name': result['name'],
+                                'image_url': result['image_uris']['normal'] if 'image_uris' in result else '',
+                                'id': result['oracle_id'],
+                                'text': convert_symbols(result['oracle_text']) if 'oracle_text' in result else convert_symbols(result['card_faces'][0]['oracle_text']),
+                                'type': result['type_line'],
+                                'mana_cost': result['mana_cost'] if 'mana_cost' in result else result['card_faces'][0]['mana_cost']
+                            }
+                            for result in srch_results
+                        ]
+                        context['cards'] = cards
+                else:
+                    return JsonResponse({'Response': response.status_code})
         return render(request, 'app/cards.html', context)
+    # return HttpResponse('Hello')
+    except TypeError as e:
+        return JsonResponse({'TypeError': str(e)})
     except Exception as e:
         return JsonResponse({'Error': str(e)})
