@@ -43,6 +43,9 @@
                                     <p><a href="{% url 'app:card_image' c.id %}">{{ c.name }}</a></p>
                                     <p>{{ c.type }}</p>
                                     <p class="small text-muted">{{ c.text|safe }}</p>
+                                    {% if c.flavor %}
+                                        <p class="small text-muted"><i>{{ c.flavor }}</i></p>
+                                    {% endif %}
                                     {% if c.power %}
                                         <p>{{ c.power }}/{{ c.toughness }}</p>
                                     {% endif %}

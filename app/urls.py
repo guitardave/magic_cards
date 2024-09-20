@@ -9,4 +9,6 @@ urlpatterns = [
     path('cards/<str:set_id>/', views.card_list, name='card_list'),
     path('cards/<str:card_id>/images/', views.card_image, name='card_image'),
     path('search/', views.card_search, name='card_search'),
+    path('toggle_mode/', views.toggle_view_mode, name='toggle_mode'),
+    path('toggle_mode/<str:mode>/', views.toggle_view_mode, name='toggle_mode'),
 ]

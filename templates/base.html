@@ -2,7 +2,11 @@
 {% load django_bootstrap_breadcrumbs %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="">
+{% if request.COOKIES.toggle_mode and request.COOKIES.toggle_mode == 'dark' %}
+    <html lang="en" data-bs-theme="dark">
+{% else %}
+    <html lang="en">
+{% endif %}
 
 <head>
 	<!-- Required meta tags -->
@@ -38,7 +42,7 @@
 
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-light fixed-top">
+        <nav id="my-navbar" class="navbar navbar-expand-md navbar-dark {% if request.COOKIES.toggle_mode and request.COOKIES.toggle_mode == 'dark' %}bg-dark{% else %}bg-light{% endif %} fixed-top">
             <div class="container">
                 <a class="navbar-brand mr-4" href="{% url 'app:home' %}">
                     <img class="img-fluid" src="{% static 'images/mtg-logo-2017.png' %}" alt="logo">
@@ -50,12 +54,15 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
+                            <a class="nav-link" id="toggle-link" href="#togglemode">{% include '_toggle_mode.html' %}</a>
+                        </li>
+                        <li class="nav-item">
                             <form method="post" action="{% url 'app:card_search' %}">
                                 {% csrf_token %}
                                 <div class="input-group">
                                     <label for="search"></label>
                                     <input type="text" name="search" id="search" class="form-control form-control-lg rounded-start" placeholder="Search...">
-                                    <button class="btn btn-lg btn-outline-secondary"><i class="fa fa-search"></i></button>
+                                    <button id="search-btn" class="btn btn-lg {% if request.COOKIES.toggle_mode and request.COOKIES.toggle_mode == 'dark' %}btn-dark btn-outline-secondary{% else %}btn-light btn-outline-dark{% endif %}"><i class="fa fa-search"></i></button>
                                 </div>
                             </form>
                         </li>
@@ -105,6 +112,52 @@
                     $("#searchCount").html()
                 });
             });
+        });
+        $('#toggle-link').on('click', function () {
+            let html_tag = $('html');
+            let mode = html_tag.attr('data-bs-theme');
+            let this_mode = mode ? null : 'dark';
+            html_tag.attr('data-bs-theme', this_mode);
+            $.ajax({
+                url: '/toggle_mode/'+this_mode+'/',
+                type: 'GET',
+                success: function(res) {
+                    $('#toggle-link').html(res);
+                }
+            });
+            
+            console.log(this_mode);
+            
+            if (this_mode === 'dark') {
+                $('#my-navbar')
+                    .addClass('bg-dark')
+                    .removeClass('bg-light');
+                $('#search-btn')
+                    .addClass('btn-dark')
+                    .addClass('btn-outline-secondary')
+                    .removeClass('btn-outline-dark')
+                    .removeClass('btn-light');
+                $('#toggle-mode')
+                    .addClass('text-light')
+                    .removeClass('text-dark')
+                    .removeClass('fa-moon-o')
+                    .addClass('fa-sun-o');
+            }
+            else {
+                $('#my-navbar')
+                    .addClass('bg-light')
+                    .removeClass('bg-dark');
+                $('#search-btn')
+                    .addClass('btn-light')
+                    .addClass('btn-outline-dark')
+                    .removeClass('btn-outline-secondary')
+                    .removeClass('btn-dark');
+                $('#toggle-mode')
+                    .addClass('text-dark')
+                    .removeClass('text-light')
+                    .removeClass('fa-sun-o')
+                    .addClass('fa-moon-o');
+            }
         });
     </script>
 </body>

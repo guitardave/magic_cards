@@ -17,6 +17,20 @@ SCRYFALL_SYMBOLS = SCRYFALL_API + 'symbology/'
 SCRYFALL_URI = 'https://svgs.scryfall.io/card-symbols/'
 
 
+def toggle_view_mode(request, mode: str = None):
+    if mode is not None:
+        if mode == 'dark':
+            response = HttpResponse('<i id="toggle-mode" class="fa fa-sun-o text-light"></i>')
+            response.set_cookie('toggle_mode', 'dark')
+        else:
+            response = HttpResponse('<i id="toggle-mode" class="fa fa-moon-o text-dark"></i>')
+            response.set_cookie('toggle_mode', None)
+    else:
+        response = HttpResponse('<i id="toggle-mode" class="fa fa-moon-o text-dark"></i>')
+        response.set_cookie('toggle_mode', None)
+    return response
+
+
 def customhandler404(request, exception, template_name='404.html'):
     response = render(request, template_name)
     response.status_code = 404
@@ -43,7 +57,7 @@ def convert_symbols(text: str) -> str:
     return text
 
 
-@cache_page(60 * 15)
+# @cache_page(60 * 15)
 def home(request):
     try:
         card_sets = get_sets()
@@ -80,7 +94,9 @@ def card_list(request, set_id: str):
                 'text': convert_symbols(r.text) if r.text else '',
                 'image_url': r.image_url,
                 'power': r.power,
-                'toughness': r.toughness
+                'flavor': r.flavor,
+                'toughness': r.toughness,
+                # 'card_no': r.card_no
             }
             for r in rs
         ]
@@ -100,18 +116,44 @@ def card_list(request, set_id: str):
 # @cache_page(60 * 15)
 def card_image(request, card_id: str):
     try:
-        obj = Card.find(card_id)
-        card_set = Set.find(obj.set)
-        o_text = convert_symbols(obj.text)
+        response = requests.get(SCRYFALL_API + '/cards/' + card_id)
+        if response.status_code == 200:
+            # print(response.json())
+            obj = response.json()
+        else:
+            obj = {
+                'type': '',
+                'set': '',
+                'text': '',
+                'power': None,
+                'toughness': None,
+                'flavor': '',
+                'name': '',
+                'mana_cost': '',
+                'image_uris': {'normal': ''},
+                'oracle_text': ''
+            }
+        # obj = Card.find(card_id)
+        print(obj)
+        r_set = requests.get('https://api.scryfall.com/sets/'+obj['set'])
+        if r_set.status_code == 200:
+            card_set = r_set.json()
+        else:
+            card_set = None
+        o_text = convert_symbols(obj['oracle_text'])
         o_card = {
             'text': o_text,
-            'power': obj.power,
-            'toughness': obj.toughness,
-            'name': obj.name,
-            'flavor': obj.flavor,
-            'mana_cost': obj.mana_cost,
-            'image_url': obj.image_url,
-            'type': obj.type,
+            'power': obj['power'] if 'power' in obj else None,
+            'toughness': obj['toughness'] if 'toughness' in obj else None,
+            'name': obj['name'],
+            'type': obj['type_line'] if 'type_line' in obj else None,
+            'flavor': obj['flavor_text'] if 'flavor_text' in obj else None,
+            'mana_cost': obj['mana_cost'],
+            'image_url': obj['image_uris']['normal'],
+            'set': obj['set'],
+            'oracle_text': obj['oracle_text']
+
+
         }
         context = {'title': 'Card Image', 'obj': o_card, 'card_set': card_set}
         return render(request, 'app/card_image.html', context)
@@ -134,12 +176,14 @@ def card_search(request):
                     if len(srch_results) > 0:
                         cards = [
                             {
+                                'id': result['id'],
                                 'name': result['name'],
                                 'image_url': result['image_uris']['normal'] if 'image_uris' in result else '',
-                                'id': result['oracle_id'],
+                                'oracle_id': result['oracle_id'],
                                 'text': convert_symbols(result['oracle_text']) if 'oracle_text' in result else convert_symbols(result['card_faces'][0]['oracle_text']),
                                 'type': result['type_line'],
-                                'mana_cost': result['mana_cost'] if 'mana_cost' in result else result['card_faces'][0]['mana_cost']
+                                'mana_cost': result['mana_cost'] if 'mana_cost' in result else result['card_faces'][0]['mana_cost'],
+                                'flavor': result['flavor_text']
                             }
                             for result in srch_results
                         ]
